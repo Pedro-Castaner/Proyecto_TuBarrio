@@ -78,7 +78,7 @@ class ChatsListScreen extends StatelessWidget {
             tileColor: Colors.white,
           ),
           ListTile(
-            leading: CircleAvatar(child: Text('P')), // Pedro
+            leading: CircleAvatar(backgroundImage: AssetImage('lib/assets/images/171725F4-DF0A-42FF-9E0F-A04DBC846063.jpeg')), // Pedro
             title: Text('Pedro', style: TextStyle(color: Colors.black)),
             trailing: Icon(Icons.more_vert),
             tileColor: Colors.white,

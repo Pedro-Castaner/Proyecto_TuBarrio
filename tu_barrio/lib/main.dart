@@ -1,10 +1,16 @@
 // main.dart
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:tu_barrio/screens/home.dart';
 import 'package:tu_barrio/screens/splashscreen.dart'; // Importa el archivo splashscreen.dart
-import 'package:tu_barrio/screens/chats.dart'; // Importa el archivo chats.dart
 import 'package:tu_barrio/theme/theme.dart'; // Importa el tema
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MainApp());
 }
 
@@ -28,6 +34,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ChatsScreen(); // Usa el ChatsScreen en lugar de la lista
+    return const Mantenedor(); // Usa el ChatsScreen en lugar de la lista
   }
 }
