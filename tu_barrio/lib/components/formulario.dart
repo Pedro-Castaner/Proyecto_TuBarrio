@@ -1,52 +1,72 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:flutter/material.dart';
 class FormularioScreen extends StatefulWidget {
-  const FormularioScreen({super.key});
+  final DocumentSnapshot? usuario;
+
+  const FormularioScreen({super.key, this.usuario});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _FormularioScreenState createState() => _FormularioScreenState();
+  FormularioScreenState createState() => FormularioScreenState();
 }
 
-class _FormularioScreenState extends State<FormularioScreen> {
+class FormularioScreenState extends State<FormularioScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nombreController = TextEditingController();
-  final TextEditingController _apellidoPaternoController = TextEditingController();
-  final TextEditingController _apellidoMaternoController = TextEditingController();
-  final TextEditingController _telefonoController = TextEditingController();
 
+  // Controladores para los campos de texto
+  final _nombreController = TextEditingController();
 
-  Future<void> _submitForm(BuildContext context) async {
+  @override
+  void initState() {
+    super.initState();
+
+    // Si estamos en modo edición, cargamos los datos del usuario en los controladores
+    if (widget.usuario != null) {
+      final usuarioData = widget.usuario!.data() as Map<String, dynamic>;
+      _nombreController.text = usuarioData['nombre'] ?? '';
+
+    }
+  }
+
+  @override
+  void dispose() {
+    // Liberamos los controladores al cerrar el formulario
+    _nombreController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveUser() async {
     if (_formKey.currentState!.validate()) {
+      final usuarioData = {
+        'nombre': _nombreController.text,
+
+      };
+
       try {
-        await FirebaseFirestore.instance.collection('usuarios').add({
-          'nombre': _nombreController.text,
-          'apellido paterno': _apellidoPaternoController.text,
-          'apellido materno': _apellidoMaternoController.text,
-          'telefono': _telefonoController.text,
-          
-         
-        });
+        if (widget.usuario == null) {
+          // Si el usuario es nuevo, lo agregamos a la colección
+          await FirebaseFirestore.instance.collection('usuarios').add(usuarioData);
 
-        _nombreController.clear();
-        _apellidoPaternoController.clear();
-        _apellidoMaternoController.clear();
-        _telefonoController.clear();
+          // Mostrar un SnackBar de confirmación de creación
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Usuario creado correctamente')),
+          );
+        } else {
+          // Si es una edición, actualizamos el documento existente
+          await FirebaseFirestore.instance
+              .collection('usuarios')
+              .doc(widget.usuario!.id)
+              .update(usuarioData);
 
-        
+          // Mostrar un SnackBar de confirmación de edición
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Usuario editado correctamente')),
+          );
+        }
 
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).pop();
-
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Datos guardados exitosamente')),
-        );
+        Navigator.of(context).pop(); // Cerramos el formulario
       } catch (e) {
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error al guardar los datos')),
+          const SnackBar(content: Text('Error al guardar el usuario')),
         );
       }
     }
@@ -55,51 +75,42 @@ class _FormularioScreenState extends State<FormularioScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView( // Recuérdame....ingleChildScrollView
-        child: Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 16.0,
-            right: 16.0,
-            top: 16.0,
+      appBar: AppBar(
+        title: Text(widget.usuario == null ? 'Agregar Usuario' : 'Editar Usuario'),
+        automaticallyImplyLeading: false, // Desactiva la flecha de retroceso
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close), // Ícono de cierre (X)
+            onPressed: () {
+              Navigator.of(context).pop(); // Cierra la pantalla actual
+            },
           ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 32),
-                const Text(
-                  'Crear nuevo profesor',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 32),
-                TextFormField(
-                  controller: _nombreController,
-                  decoration: const InputDecoration(labelText: 'Nombre'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, ingrese el nombre';
-                    }
-                    return null;
-                  },
-                ),
-               
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => _submitForm(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('REGISTRAR'),
-                  ),
-                ),
-              ],
-            ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              TextFormField(
+                controller: _nombreController,
+                decoration: const InputDecoration(labelText: 'Nombre'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingrese un nombre';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 32), // Espacio entre campos
+      
+              const SizedBox(height: 32), // Espacio antes del botón
+              ElevatedButton(
+                onPressed: _saveUser,
+                child: Text(widget.usuario == null ? 'Agregar' : 'Actualizar'),
+              ),
+            ],
           ),
         ),
       ),

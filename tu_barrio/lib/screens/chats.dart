@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tu_barrio/components/appbar.dart'; // Importa el tema
 
 class ChatsScreen extends StatefulWidget {
   const ChatsScreen({super.key});
@@ -12,13 +11,16 @@ class ChatsScreen extends StatefulWidget {
 class _ChatsScreenState extends State<ChatsScreen> {
   int _currentIndex = 0;
 
+  // Lista de pantallas que corresponderán a cada ítem en la barra de navegación
   final List<Widget> _screens = [
-    const ChatsListScreen(),
-    const UpdateScreen(),
-    const CommunityScreen(),
-    const CallsScreen(),
+    const ExploreScreen(), // Pantalla de explorar
+    const FavoritesScreen(), // Pantalla de favoritos
+    const CommunitiesScreen(), // Pantalla de comunidades
+    const MessagesScreen(), // Pantalla de mensajes
+    const ProfileScreen(), // Pantalla de perfil
   ];
 
+  // Función para cambiar la pantalla según la opción seleccionada en la barra de navegación
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -28,212 +30,108 @@ class _ChatsScreenState extends State<ChatsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex], // Cambiado para que solo el body cambie
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: const Text(
+          'Mi App',
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      body: _screens[_currentIndex], // Mostrar la pantalla seleccionada
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onItemTapped,
+        currentIndex: _currentIndex, // Índice actual de la barra de navegación
+        onTap: _onItemTapped, // Función al hacer tap en un ítem
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chats',
+            icon: Icon(Icons.search), // Ícono de lupa para "Explorar"
+            label: 'Explorar',
+            backgroundColor: Colors.lightBlue, // Color de fondo para este ítem
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.update),
-            label: 'Update',
+            icon: Icon(
+                Icons.favorite_border), // Ícono de corazón para "Favoritos"
+            label: 'Favoritos',
+            backgroundColor: Colors.blue, // Color de fondo para este ítem
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.group),
-            label: 'Comunidad',
+            icon: Icon(Icons
+                .people_outline), // Ícono de silueta de personas para "Comunidades"
+            label: 'Comunidades',
+            backgroundColor: Colors.lightBlue, // Color de fondo para este ítem
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.call),
-            label: 'Llamadas',
+            icon: Icon(Icons.message), // Ícono de mensaje para "Mensajes"
+            label: 'Mensajes',
+            backgroundColor: Colors.blue, // Color de fondo para este ítem
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle), // Ícono de perfil para "Perfil"
+            label: 'Perfil',
+            backgroundColor: Colors.lightBlue, // Color de fondo para este ítem
           ),
         ],
+        selectedItemColor:
+            Colors.white, // Color del ícono cuando está seleccionado
+        unselectedItemColor:
+            Colors.black, // Color del ícono cuando NO está seleccionado
+        showSelectedLabels:
+            true, // Mostrar las etiquetas de los íconos seleccionados
+        showUnselectedLabels:
+            true, // Mostrar las etiquetas de los íconos no seleccionados
       ),
     );
   }
 }
 
-// Pantalla para mostrar la lista de chats
-class ChatsListScreen extends StatelessWidget {
-  const ChatsListScreen({super.key});
+// Pantalla de Explorar
+class ExploreScreen extends StatelessWidget {
+  const ExploreScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(context), // AppBar solo en esta pantalla
-      body: ListView(
-      children: const [
-       ListTile(
-            leading: CircleAvatar(child: Text('G')), // Germán
-            title: Text('Germán', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('S')), // Sofía
-            title: Text('Sofía', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(backgroundImage: AssetImage('lib/assets/images/171725F4-DF0A-42FF-9E0F-A04DBC846063.jpeg')), // Pedro
-            title: Text('Pedro', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('I')), // Isidora
-            title: Text('Isidora', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('A')), // Antonia
-            title: Text('Antonia', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('B')), // Benjamín
-            title: Text('Benjamín', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('J')), // Josefina
-            title: Text('Josefina', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('S')), // Sophia
-            title: Text('Sophia', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('D')), // Daniela
-            title: Text('Daniela', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('A')), // Axel
-            title: Text('Axel', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('F')), // Francisca
-            title: Text('Francisca', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('G')), // Germán
-            title: Text('Germán', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('S')), // Sofía
-            title: Text('Sofía', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('P')), // Pedro
-            title: Text('Pedro', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('I')), // Isidora
-            title: Text('Isidora', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('A')), // Antonia
-            title: Text('Antonia', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('B')), // Benjamín
-            title: Text('Benjamín', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('J')), // Josefina
-            title: Text('Josefina', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('S')), // Sophia
-            title: Text('Sophia', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('D')), // Daniela
-            title: Text('Daniela', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('A')), // Axel
-            title: Text('Axel', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-          ListTile(
-            leading: CircleAvatar(child: Text('F')), // Francisca
-            title: Text('Francisca', style: TextStyle(color: Colors.black)),
-            trailing: Icon(Icons.more_vert),
-            tileColor: Colors.white,
-          ),
-        
-      ],
-      ),
-    );
-  }
-}
-class UpdateScreen extends StatelessWidget {
-  const UpdateScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Updates')), // Sin AppBar
-    );
+    return const Center(child: Text('Explorar'));
   }
 }
 
-// Pantalla para comunidad
-class CommunityScreen extends StatelessWidget {
-  const CommunityScreen({super.key});
+// Pantalla de Favoritos
+class FavoritesScreen extends StatelessWidget {
+  const FavoritesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Comunidad')), // Sin AppBar
-    );
+    return const Center(child: Text('Favoritos'));
   }
 }
 
-// Pantalla para llamadas
-class CallsScreen extends StatelessWidget {
-  const CallsScreen({super.key});
+// Pantalla de Comunidades
+class CommunitiesScreen extends StatelessWidget {
+  const CommunitiesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Llamadas')), // Sin AppBar
-    );
+    return const Center(child: Text('Comunidades'));
+  }
+}
+
+// Pantalla de Mensajes
+class MessagesScreen extends StatelessWidget {
+  const MessagesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Mensajes'));
+  }
+}
+
+// Pantalla de Perfil
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Perfil'));
   }
 }
